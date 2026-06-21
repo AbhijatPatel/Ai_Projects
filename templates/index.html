@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AI Assistant</title>
+    <style>
+      body { font-family: Arial, sans-serif; max-width: 800px; margin: 2rem auto; }
+      .msg { padding: 0.5rem; border-radius: 6px; margin-bottom: 0.5rem; }
+      .user { background:#e6f7ff; }
+      .assistant { background:#f0f0f0; }
+      form { margin-top: 1rem; display:flex; gap:8px; }
+      input[type=text] { flex:1; padding:8px; }
+    </style>
+  </head>
+  <body>
+    <h1>AI Assistant</h1>
+    <div id="history">
+      {% for m in history %}
+        <div class="msg {{ 'user' if m.role == 'user' else 'assistant' }}">
+          <strong>{{ m.role.title() }}:</strong>
+          <div>{{ m.content }}</div>
+          {% if m.role == 'assistant' %}
+            <form method="post" action="/save" style="margin-top:6px;">
+              <input type="hidden" name="content" value="{{ m.content|e }}" />
+              <input name="filename" placeholder="filename.txt" style="padding:4px;" />
+              <button type="submit">Save to file</button>
+            </form>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <form method="post">
+      <input name="prompt" type="text" placeholder="Enter a prompt" autocomplete="off" />
+      <button type="submit">Send</button>
+    </form>
+
+    <form method="post" action="/clear" style="margin-top:8px;">
+      <button type="submit">Clear history</button>
+    </form>
+  </body>
+</html>
